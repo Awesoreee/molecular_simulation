@@ -1,17 +1,12 @@
-cmake_minimum_required(VERSION 3.16) # Проверка версии CMake.
-									# Если версия установленной программы
-									# старее указаной, произойдёт аварийный выход.
+cmake_minimum_required(VERSION 3.16)
 
-#настраиваем стандарты языка
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(molecular_simulation)				# Название проекта
+project(molecular_simulation)
 
-set(SOURCE_EXE src/main.cpp)			# Установка переменной со списком исходников
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/SFML" "${CMAKE_CURRENT_BINARY_DIR}/sfml_build")
 
-add_executable(main ${SOURCE_EXE})	# Создает исполняемый файл с именем main
+add_executable(MyProgram src/main.cpp)
 
-add_subdirectory(SFML)				# Добавление подпроекта, указывается имя дирректории
-
-target_link_libraries(main SFML)		# Линковка программы с библиотекой
+target_link_libraries(MyProgram PRIVATE SFML::Graphics)
