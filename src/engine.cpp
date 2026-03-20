@@ -4,16 +4,18 @@
 #include <cmath>
 
 class atoms {
-    sf::Vector2f borders;
-    std::vector<sf::Vector2f> coords_all;
-    std::vector<sf::Vector2f> veloc_all;
-    std::vector<sf::Vector2f> forces_all;
-    int amount = 0;
+    sf::Vector2u borders;
     float sigmaNe = 2.67;
     float epsNe = 0.0031;
-public:
-    atoms(int n, float width, float height){
-        borders = {width, height};
+    std::vector<sf::Vector2f> veloc_all;
+    std::vector<sf::Vector2f> forces_all;
+
+    public:
+    std::vector<sf::Vector2f> coords_all;
+    int amount = 0;
+
+    atoms(int n, sf::Vector2u bord){
+        borders = bord;
         coords_all.resize(n);
         veloc_all.resize(n);
         amount = n;
