@@ -6,7 +6,7 @@
 class atoms {
     sf::Vector2u borders;
     float sigmaNe = 2.67;
-    float epsNe = 0.0031;
+    float epsNe = 1;
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
 
