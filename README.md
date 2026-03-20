@@ -7,3 +7,5 @@ cmake -S . -B build
 cmake --build build
 
 by Awesoreee and Tomigras
+
+pashalka
