@@ -6,7 +6,7 @@
 class atoms {
     sf::Vector2u borders;
     float sigmaNe = 2.67;
-    float epsNe = 0.0031;
+    float epsNe = 1;
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
 
@@ -31,6 +31,7 @@ class atoms {
         for (i=0;i++;i<amount){
             coords_all[i] += veloc_all[i] * dt + 0.5f * forces_all[i] * dt * dt;
         }
+        return 0;
     }
 private:
     sf::Vector2f count_force(sf::Vector2f coords1, sf::Vector2f coords2){
@@ -48,6 +49,7 @@ private:
                 }
             }
         }
+        return 0;
     }
     
 };
