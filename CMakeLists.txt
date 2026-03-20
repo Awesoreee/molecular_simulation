@@ -9,4 +9,6 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/SFML" "${CMAKE_CURRENT_BINARY_DIR}
 
 add_executable(MyProgram src/main.cpp)
 
-target_link_libraries(MyProgram PRIVATE SFML::Graphics)
+target_link_libraries(MyProgram sfml-graphics sfml-window sfml-system sfml-audio)
+
+add_definitions(-DPROJECT_ROOT="${CMAKE_SOURCE_DIR}/")
