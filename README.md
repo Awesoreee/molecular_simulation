@@ -1,5 +1,5 @@
 # molecular_simulation
-using sfml 3.0.2
+using sfml 3.0.2 and TGUI-1.x
 
 
 #Building
