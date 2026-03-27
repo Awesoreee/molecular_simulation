@@ -9,7 +9,8 @@ class atoms {
     std::mt19937 gen{rd()};
     sf::Vector2u borders;
     float sigmaNe = 2.67;
-    float epsNe = 3.1;
+    float epsNe = 0.031;
+    float massNe = 1.66 * pow(10, -2);
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
 
@@ -23,7 +24,6 @@ class atoms {
         veloc_all.resize(n);
         forces_all.resize(n);
         amount = n;
-        randomize(20);
     }
     int add_atom(sf::Vector2f coords = sf::Vector2f(0.f, 0.f), sf::Vector2f veloc = sf::Vector2f(0.f, 0.f)){
         coords_all.push_back(coords);
@@ -36,7 +36,7 @@ class atoms {
         count_forces();
         int i;
         for (i=0;i<amount;i++){
-            coords_all[i] += veloc_all[i] * dt + 0.5f * forces_all[i] * dt * dt;
+            coords_all[i] += veloc_all[i] * dt + 0.5f * forces_all[i] * dt * dt / massNe;
             veloc_all[i] += forces_all[i] * dt;
             //std::cout << i << "coords and veloc" << coords_all[i].x << coords_all[i].y << veloc_all[i].x << veloc_all[i].y << std::endl;
         }
@@ -68,7 +68,7 @@ private:
             forces_all[i] = {0,0};
             for (j=0;j<amount;j++){
                 if (i != j) {
-                    std::cout << i << j;
+                    //std::cout << i << j;
                     forces_all[i] += count_force(coords_all[i], coords_all[j]);
                 }
             }
