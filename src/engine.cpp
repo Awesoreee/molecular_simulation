@@ -23,7 +23,7 @@ class atoms {
         veloc_all.resize(n);
         forces_all.resize(n);
         amount = n;
-        randomize(10);
+        randomize(20);
     }
     int add_atom(sf::Vector2f coords = sf::Vector2f(0.f, 0.f), sf::Vector2f veloc = sf::Vector2f(0.f, 0.f)){
         coords_all.push_back(coords);
@@ -46,10 +46,10 @@ class atoms {
         int i;
         std::uniform_real_distribution<float> distx(0.0f,2*float(borders.x));
         std::uniform_real_distribution<float> disty(0.0f,2*float(borders.y));
-        std::uniform_real_distribution<float> distv(0.0f,float(max_velocity));
+        std::uniform_real_distribution<float> distv(0.0f,float(2*max_velocity));
         for (i = 0; i < amount; i++){
             coords_all[i] = {distx(gen) - borders.x, disty(gen) - borders.y};
-            veloc_all[i] = {distv(gen), distv(gen)};
+            veloc_all[i] = {distv(gen) - max_velocity, distv(gen) - max_velocity};
         }
     }
 private:
