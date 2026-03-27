@@ -2,11 +2,14 @@
 #include "../SFML/include/SFML/Graphics.hpp"
 #include <vector>
 #include <cmath>
+#include <random>
 
 class atoms {
+    std::random_device rd;
+    std::mt19937 gen{rd()};
     sf::Vector2u borders;
     float sigmaNe = 2.67;
-    float epsNe = 1;
+    float epsNe = 0.31;
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
 
@@ -20,12 +23,14 @@ class atoms {
         veloc_all.resize(n);
         forces_all.resize(n);
         amount = n;
+        randomize(10);
     }
     int add_atom(sf::Vector2f coords = sf::Vector2f(0.f, 0.f), sf::Vector2f veloc = sf::Vector2f(0.f, 0.f)){
         coords_all.push_back(coords);
         veloc_all.push_back(veloc);
         forces_all.push_back({1,1});
         amount++;
+        return 0;
     }
     int tick_forward(float dt){
         count_forces();
@@ -37,11 +42,23 @@ class atoms {
         }
         return 0;
     }
+    void randomize(int max_velocity){
+        int i;
+        std::uniform_real_distribution<float> distx(float(-borders.x),float(borders.x));
+        std::uniform_real_distribution<float> disty(float(-borders.y),float(borders.y));
+        std::uniform_real_distribution<float> distv(0.0f,float(max_velocity));
+        for (i = 0; i < amount; i++){
+            coords_all[i] = {distx(gen), disty(gen)};
+            veloc_all[i] = {distv(gen), distv(gen)};
+        }
+    }
 private:
     sf::Vector2f count_force(sf::Vector2f coords1, sf::Vector2f coords2){
         sf::Vector2f diff = coords1 - coords2;
         float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
-        float force = (48 * epsNe / sigmaNe) * (pow(sigmaNe / distance, 13) - 0.5 * pow(sigmaNe / distance, 7));
+        if (distance < 1e-6) return {0, 0};
+        float sr = sigmaNe / distance;
+        float force = (48 * epsNe / sigmaNe) * (pow(sr, 13) - 0.5 * pow(sr, 7));
         std::cout << "Distance: " << distance << ", Force: " << force << std::endl;
         return diff.normalized() * force;
     }
