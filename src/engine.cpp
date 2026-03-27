@@ -9,7 +9,7 @@ class atoms {
     std::mt19937 gen{rd()};
     sf::Vector2u borders;
     float sigmaNe = 2.67;
-    float epsNe = 0.31;
+    float epsNe = 3.1;
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
 
@@ -38,7 +38,7 @@ class atoms {
         for (i=0;i<amount;i++){
             coords_all[i] += veloc_all[i] * dt + 0.5f * forces_all[i] * dt * dt;
             veloc_all[i] += forces_all[i] * dt;
-            std::cout << i << "coords and veloc" << coords_all[i].x << coords_all[i].y << veloc_all[i].x << veloc_all[i].y << std::endl;
+            //std::cout << i << "coords and veloc" << coords_all[i].x << coords_all[i].y << veloc_all[i].x << veloc_all[i].y << std::endl;
         }
         return 0;
     }
@@ -59,7 +59,7 @@ private:
         if (distance < 1e-6) return {0, 0};
         float sr = sigmaNe / distance;
         float force = (48 * epsNe / sigmaNe) * (pow(sr, 13) - 0.5 * pow(sr, 7));
-        std::cout << "Distance: " << distance << ", Force: " << force << std::endl;
+        //std::cout << "Distance: " << distance << ", Force: " << force << std::endl;
         return diff.normalized() * force;
     }
     int count_forces(){
