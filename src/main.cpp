@@ -17,18 +17,16 @@ int main()
     sf::Time TimeSinceLastUpgrade = sf::Time::Zero;
     sf::Time TimePerSec = sf::seconds(1.f / 60.f);
 
-    int n = 3;
+    int n = 20;
     atoms Atoms(n, {800, 600});
-    Atoms.coords_all[0] = sf::Vector2f(100, 200);
-    Atoms.coords_all[1] = sf::Vector2f(200, 195);
-    Atoms.coords_all[2] = sf::Vector2f(110, 200);
+    Atoms.randomize(1);
 
     std::vector<sf::CircleShape> circs;
     circs.resize(n);
 
     for (int i = 0; i < n; i++){
         circs[i].setPosition(Atoms.coords_all[i]);
-        circs[i].setRadius(5);
+        circs[i].setRadius(3);
     }
     
 
@@ -41,11 +39,12 @@ int main()
                 window.close();
         }
         
-        window.clear();
 
         TimeSinceLastUpgrade += clock.restart();
 
         while(TimeSinceLastUpgrade >= TimePerSec){
+            window.clear();
+
             TimeSinceLastUpgrade -= TimePerSec;
             Atoms.tick_forward(0.1);
             for(int i = 0; i < n; i++){
