@@ -44,11 +44,11 @@ class atoms {
     }
     void randomize(int max_velocity){
         int i;
-        std::uniform_real_distribution<float> distx(0.0f,2*float(borders.x));
-        std::uniform_real_distribution<float> disty(0.0f,2*float(borders.y));
+        std::uniform_real_distribution<float> distx(0.0f,float(borders.x));
+        std::uniform_real_distribution<float> disty(0.0f,float(borders.y));
         std::uniform_real_distribution<float> distv(0.0f,float(2*max_velocity));
         for (i = 0; i < amount; i++){
-            coords_all[i] = {distx(gen) - borders.x, disty(gen) - borders.y};
+            coords_all[i] = {distx(gen) - borders.x / 2, disty(gen) - borders.y / 2};
             veloc_all[i] = {distv(gen) - max_velocity, distv(gen) - max_velocity};
         }
     }
