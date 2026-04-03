@@ -80,11 +80,11 @@ class atoms {
     void randomize(int max_velocity);
 private:
 
-    CellKey get_cell(sf::Vector2f pos);
+    CellKey get_cell(sf::Vector2f pos) const;
 
     void build_spatial_hash();
 
-    std::vector<int> query_neighbors(sf::Vector2f pos);
+    std::vector<int> query_neighbors(sf::Vector2f pos) const;
 
     sf::Vector2f count_force(sf::Vector2f coords1, sf::Vector2f coords2);
 
