@@ -96,7 +96,9 @@ int main()
 
     // Add atoms
     int n = 250;
-    atoms Atoms(n, {600, 400});
+    sf::Vector2u coordOfBorder = {640, 360};
+    sf::Vector2u sizeOfBorder = {640, 360};
+    atoms Atoms(n, coordOfBorder, sizeOfBorder);
     Atoms.randomize(1);
 
     std::vector<sf::CircleShape> circs;
@@ -124,13 +126,19 @@ int main()
                 {
                     if(mouseClick->button == sf::Mouse::Button::Left)
                     {
-                        Atoms.add_atom((sf::Vector2f)sf::Mouse::getPosition(window));
-
-
-                        n++;
-                        circs.resize(n);
-                        circs[n-1].setPosition(Atoms.coords_all[n-1]);
-                        circs[n-1].setRadius(3);
+                        if(
+                            (sf::Mouse::getPosition(window).x > coordOfBorder.x) &&
+                            (sf::Mouse::getPosition(window).x < coordOfBorder.x + sizeOfBorder.x) &&
+                            (sf::Mouse::getPosition(window).y > coordOfBorder.y) &&
+                            (sf::Mouse::getPosition(window).y < coordOfBorder.y + sizeOfBorder.y)
+                        )
+                        {
+                            Atoms.add_atom((sf::Vector2f)sf::Mouse::getPosition(window));
+                            n++;
+                            circs.resize(n);
+                            circs[n-1].setPosition(Atoms.coords_all[n-1]);
+                            circs[n-1].setRadius(3);
+                        }
                     }
                 }
             }
