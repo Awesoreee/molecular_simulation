@@ -94,7 +94,7 @@ int main()
     sf::Vector2u coordOfBorder = {640, 360};
     sf::Vector2u sizeOfBorder = {640, 360};
     atoms Atoms(n, coordOfBorder, sizeOfBorder);
-    Atoms.randomize(1);
+    Atoms.randomize(5);
 
     std::vector<sf::CircleShape> circs;
     circs.resize(n);
