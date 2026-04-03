@@ -5,6 +5,16 @@
 #include <random>
 #include <unordered_map>
 
+struct CellKey {
+    int x, y;
+    bool operator==(const CellKey& o) const { return x == o.x && y == o.y; }
+};
+
+struct CellKeyHash {
+    size_t operator()(const CellKey& c) const {
+        return std::hash<int>()(c.x) ^ (std::hash<int>()(c.y) * 2654435761u);
+    }
+};
 
 class atoms {
     std::random_device rd;
@@ -15,8 +25,11 @@ class atoms {
     float epsNe = 0.0031 * 1.602 * pow(10, -19);
     float massNe = 1.66;
     float cell_size = 2.5 * sigmaNe;
+
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
+
+    std::unordered_map<CellKey, std::vector<int>, CellKeyHash> spatial_table;
 
     public:
     std::vector<sf::Vector2f> coords_all;
@@ -40,13 +53,11 @@ class atoms {
     }
 
     int tick_forward(float dt){
+        build_spatial_hash();
         count_forces();
         int i;
         for (i=0;i<amount;i++){
-            //coords_all[i] += veloc_all[i] * dt + 0.5f * forces_all[i] * dt * dt / massNe;
-            //veloc_all[i] += forces_all[i] * dt / massNe;
             check_wall_collision(&(coords_all[i]), &(veloc_all[i]), forces_all[i], massNe, dt);
-            //std::cout << i << "coords and veloc" << coords_all[i].x << coords_all[i].y << veloc_all[i].x << veloc_all[i].y << std::endl;
         }
         return 0;
     }
@@ -63,25 +74,50 @@ class atoms {
     }
 private:
 
+    CellKey get_cell(sf::Vector2f pos) const {
+        return {
+            static_cast<int>(std::floor(pos.x / cell_size)),
+            static_cast<int>(std::floor(pos.y / cell_size))
+        };
+    }
+
+    // Пересобрать таблицу с нуля (вызывается каждый тик)
+    void build_spatial_hash() {
+        spatial_table.clear();
+        for (int i = 0; i < amount; i++)
+            spatial_table[get_cell(coords_all[i])].push_back(i);
+    }
+
+    // Вернуть индексы всех атомов в 9 ячейках вокруг pos
+    std::vector<int> query_neighbors(sf::Vector2f pos) const {
+        std::vector<int> result;
+        CellKey center = get_cell(pos);
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                auto it = spatial_table.find({center.x + dx, center.y + dy});
+                if (it != spatial_table.end())
+                    for (int id : it->second)
+                        result.push_back(id);
+            }
+        }
+        return result;
+    }
+
     sf::Vector2f count_force(sf::Vector2f coords1, sf::Vector2f coords2){
         sf::Vector2f diff = coords1 - coords2;
         float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
         if (distance < 1e-6) return {0, 0};
         float sr = sigmaNe / distance;
         float force = (48 * epsNe / sigmaNe) * (pow(sr, 13) - 0.5 * pow(sr, 7));
-        //std::cout << "Distance: " << distance << ", Force: " << force << std::endl;
         return diff.normalized() * force;
     }
 
-    int count_forces(){
-        int i, j;
-        for (i=0;i<amount;i++){
-            forces_all[i] = {0,0};
-            for (j=0;j<amount;j++){
-                if (i != j) {
-                    //std::cout << i << j;
+    int count_forces() {
+        for (int i = 0; i < amount; i++) {
+            forces_all[i] = {0.f, 0.f};
+            for (int j : query_neighbors(coords_all[i])) {
+                if (i != j)
                     forces_all[i] += count_force(coords_all[i], coords_all[j]);
-                }
             }
         }
         return 0;
