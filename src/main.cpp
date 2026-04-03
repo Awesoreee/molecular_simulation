@@ -55,7 +55,7 @@ int main()
 {
     // Create the main window
     sf::Vector2u quality = {1920, 1080};
-    sf::RenderWindow window(sf::VideoMode(quality), "SFML window", sf::Style::None);
+    sf::RenderWindow window(sf::VideoMode(quality), "SFML window");
     float windowWidth = static_cast<float>(window.getSize().x);
     float windowHeight = static_cast<float>(window.getSize().y);
     tgui::Gui gui{window}; 
@@ -65,6 +65,9 @@ int main()
 
     bool finish = false;
     addButton(gui, "Exit", finish, {10.f, windowHeight - 40.f}, {70.f, 30.f});
+
+    bool isFullscreen = false;
+    addButton(gui, "Full", isFullscreen, {10.f, windowHeight - 70.f}, {70.f, 30.f});
 
     // Time initialization
     bool timeIsStop = false;
@@ -111,7 +114,9 @@ int main()
     rectangle.setFillColor(sf::Color::Transparent);
     
 
-    int frameCount = 0; 
+    int frameCount = 0;
+    bool lastState = isFullscreen;
+
     // Draw window
     while (window.isOpen())
     {
@@ -141,6 +146,37 @@ int main()
                         }
                     }
                 }
+            }
+            if(const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->code == sf::Keyboard::Key::F11)
+                {
+                    isFullscreen = !isFullscreen;
+
+                    if(isFullscreen)
+                    {
+                        window.create(sf::VideoMode::getDesktopMode(), "Molecular Simulation", sf::Style::Default, sf::State::Fullscreen);
+                    }
+                    else
+                    {
+                        window.create(sf::VideoMode(quality), "Molecular Simulation", sf::Style::Default, sf::State::Windowed);
+                    }
+
+                    lastState = isFullscreen;
+                }
+            }
+            if(isFullscreen != lastState)
+            {
+                if(isFullscreen)
+                {
+                    window.create(sf::VideoMode::getDesktopMode(), "Molecular Simulation", sf::Style::Default, sf::State::Fullscreen);
+                }
+                else
+                {
+                    window.create(sf::VideoMode(quality), "Molecular Simulation", sf::Style::Default, sf::State::Windowed);
+                }
+
+                lastState = isFullscreen;
             }
         }
         
