@@ -11,7 +11,9 @@ struct CellKey {
 };
 
 struct CellKeyHash {
-    size_t operator()(const CellKey& c) const;
+    std::size_t operator()(const CellKey& k) const {
+        return (std::hash<int>()(k.x) ^ (std::hash<int>()(k.y) << 1));
+    }
 };
 
 /**
