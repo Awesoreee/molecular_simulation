@@ -25,10 +25,10 @@ class atoms {
     std::mt19937 gen{rd()};
     sf::Vector2u zeroPos;
     sf::Vector2u borders;
-    float sigmaNe;
-    float epsNe;
-    float massNe;
-    float cell_size;
+    float sigmaNe = 2.74;
+    float epsNe = 0.0031 * 1.602 * pow(10, -19);
+    float massNe = 1.66;
+    float cell_size = 2.5 * sigmaNe;
 
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
@@ -46,7 +46,7 @@ class atoms {
      * @brief amount of existing atoms
      * 
      */
-    int amount;
+    int amount = 0;
 
     /**
      * @brief Construct a new atoms object

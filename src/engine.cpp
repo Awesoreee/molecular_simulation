@@ -6,13 +6,6 @@
 #include <unordered_map>
 #include "../include/engine.hpp"
 
-sigmaNe = 2.74;
-epsNe = 0.0031 * 1.602 * pow(10, -19);
-massNe = 1.66;
-cell_size = 2.5 * sigmaNe;
-
-amount = 0;
-
 atoms::atoms(int n, sf::Vector2u zero, sf::Vector2u bord){
     zeroPos = zero;
     borders = bord;
