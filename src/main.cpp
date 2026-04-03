@@ -2,16 +2,17 @@
 #include "../SFML/include/SFML/Graphics.hpp"
 #include "../SFML/include/SFML/Audio.hpp"
 #include "../SFML/include/SFML/Graphics/CircleShape.hpp"
+#include "../SFML/include/SFML/Graphics/RectangleShape.hpp"
 #include "../SFML/include/SFML/System/Time.hpp"
 #include "../SFML/include/SFML/System/Clock.hpp"
 #include "../TGUI/include/TGUI/Backend/SFML-Graphics.hpp"
 #include "../TGUI/include/TGUI/TGUI.hpp"
-#include "engine.cpp"
+#include "../include/engine.hpp"
 #include <vector>
 #include <iostream>
 #include <string.h>
 
-void addButton(tgui::Gui& gui, std::string Name, bool& status, sf::Vector2u coords, sf::Vector2u size)
+void addButton(tgui::Gui& gui, std::string Name, bool& status, sf::Vector2f coords, sf::Vector2f size)
 {
     auto button = tgui::Button::create(Name);
     auto [x, y] = coords;
@@ -26,26 +27,11 @@ void addButton(tgui::Gui& gui, std::string Name, bool& status, sf::Vector2u coor
     gui.add(button);
 }
 
-void addTimeButton(tgui::Gui& gui, std::string Name, bool& time, sf::Vector2u coords, sf::Vector2u size)
-{
-    auto button = tgui::Button::create(Name);
-    auto [x, y] = coords;
-    button->setPosition(x, y);
-    auto [x_size, y_size] = size;
-    button->setSize(x_size, y_size);
-
-    button->onPress([&time](){
-        time = !time;
-    });
-
-    gui.add(button);
-}
-
 sf::Time changeTimePerSec(int tick){
     return sf::seconds(1.f / tick);
 }
 
-void addTimeSlider(tgui::Gui& gui, int& tick, sf::Time& TimePerSec, sf::Vector2u coords, sf::Vector2u size, int max, int min)
+void addTimeSlider(tgui::Gui& gui, int& tick, sf::Time& TimePerSec, sf::Vector2f coords, sf::Vector2f size, int max, int min)
 {
     auto slider = tgui::Slider::create();
     auto [x, y] = coords;
@@ -68,22 +54,28 @@ void addTimeSlider(tgui::Gui& gui, int& tick, sf::Time& TimePerSec, sf::Vector2u
 int main()
 {
     // Create the main window
-    sf::RenderWindow window(sf::VideoMode({1920, 1080}), "SFML window");
+    sf::Vector2u quality = {1920, 1080};
+    sf::RenderWindow window(sf::VideoMode(quality), "SFML window", sf::Style::None);
+    float windowWidth = static_cast<float>(window.getSize().x);
+    float windowHeight = static_cast<float>(window.getSize().y);
     tgui::Gui gui{window}; 
+
+    bool AddMode = false;
+    addButton(gui, "Add atom", AddMode, {windowWidth - 80.f, windowHeight - 40.f}, {70.f, 30.f});
+
+    bool finish = false;
+    addButton(gui, "Exit", finish, {10.f, windowHeight - 40.f}, {70.f, 30.f});
 
     // Time initialization
     bool timeIsStop = false;
-    addButton(gui, "Pause", timeIsStop, {700, 500}, {70, 30});
-
-    bool AddMode = false;
-    addButton(gui, "Add atom", AddMode, {700, 700}, {70, 30});
+    addButton(gui, "Pause", timeIsStop, {windowWidth - 125.f, 10.f}, {70.f, 30.f});
     
     int tick = 60;
     sf::Clock clock;
     sf::Time TimeSinceLastUpgrade = sf::Time::Zero;
     sf::Time TimePerSec = changeTimePerSec(tick);
 
-    addTimeSlider(gui, tick, TimePerSec, {600, 500}, {120, 10}, 300, 60);
+    addTimeSlider(gui, tick, TimePerSec, {windowWidth - 150.f, 50.f}, {120, 10}, 300, 60);
 
     sf::Font font;
     font.openFromFile("../data/ObelixProB-cyr.ttf");
@@ -109,6 +101,14 @@ int main()
         circs[i].setPosition(Atoms.coords_all[i]);
         circs[i].setRadius(3);
     }
+
+    sf::RectangleShape rectangle;
+    sf::Vector2f sizeOfRect = {sizeOfBorder.x + 5.f, sizeOfBorder.y + 5.f};
+    rectangle.setSize(sizeOfRect);
+    rectangle.setOutlineColor(sf::Color::Red);
+    rectangle.setOutlineThickness(5);
+    rectangle.setPosition ((sf::Vector2f)coordOfBorder);
+    rectangle.setFillColor(sf::Color::Transparent);
     
 
     int frameCount = 0; 
@@ -118,7 +118,7 @@ int main()
         while (const std::optional event = window.pollEvent())
         {
             gui.handleEvent(*event);
-            if (event->is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>() || finish)
                 window.close();
             if (AddMode)
             {
@@ -180,6 +180,7 @@ int main()
         }
 
         window.draw(fpsText);
+        window.draw(rectangle);
 
         gui.draw(); 
         window.display();
