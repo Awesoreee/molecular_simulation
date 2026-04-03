@@ -11,7 +11,8 @@
 #include <iostream>
 #include <string.h>
 
-void addTimeButton(tgui::Gui& gui, std::string Name, bool& time, sf::Vector2u coords, sf::Vector2u size){
+void addTimeButton(tgui::Gui& gui, std::string Name, bool& time, sf::Vector2u coords, sf::Vector2u size)
+{
     auto button = tgui::Button::create(Name);
     auto [x, y] = coords;
     button->setPosition(x, y);
@@ -29,6 +30,26 @@ sf::Time changeTimePerSec(int tick){
     return sf::seconds(1.f / tick);
 }
 
+void addTimeSlider(tgui::Gui& gui, int& tick, sf::Time& TimePerSec, sf::Vector2u coords, sf::Vector2u size, int max, int min)
+{
+    auto slider = tgui::Slider::create();
+    auto [x, y] = coords;
+    slider->setPosition(x, y);
+    auto [x_size, y_size] = size;
+    slider->setSize(x_size, y_size);
+    slider->setMaximum(max);
+    slider->setMinimum(min);
+    slider->setValue(min);
+
+    slider->onValueChange([&tick, &TimePerSec](int new_tick)
+    {
+        tick = new_tick;
+        TimePerSec = changeTimePerSec(tick);
+    });
+
+    gui.add(slider);
+}
+
 int main()
 {
     // Create the main window
@@ -44,19 +65,7 @@ int main()
     sf::Time TimeSinceLastUpgrade = sf::Time::Zero;
     sf::Time TimePerSec = changeTimePerSec(tick);
 
-    auto slider = tgui::Slider::create();
-    slider->setPosition(700, 600);
-    slider->setSize(200, 20);
-    slider->setMaximum(120);
-    slider->setMinimum(10);
-    slider->setValue(60);
-
-    slider->onValueChange([&tick, &TimePerSec](int new_tick){
-        tick = new_tick;
-        TimePerSec = changeTimePerSec(tick);
-    });
-
-    gui.add(slider);
+    addTimeSlider(gui, tick, TimePerSec, {600, 500}, {120, 10}, 300, 60);
 
     // Add atoms
     int n = 7;
@@ -66,7 +75,8 @@ int main()
     std::vector<sf::CircleShape> circs;
     circs.resize(n);
 
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < n; i++)
+    {
         circs[i].setPosition(Atoms.coords_all[i]);
         circs[i].setRadius(3);
     }
@@ -84,34 +94,29 @@ int main()
         if (timeIsStop != false){
             TimeSinceLastUpgrade += clock.restart();
 
-            while(TimeSinceLastUpgrade >= TimePerSec){
+            while(TimeSinceLastUpgrade >= TimePerSec)
+            {
                 TimeSinceLastUpgrade -= TimePerSec;
                 Atoms.tick_forward(0.1);
-                for(int i = 0; i < n; i++){
+                for(int i = 0; i < n; i++)
+                {
                     circs[i].setPosition(Atoms.coords_all[i]);
                 }
             }
         }
-        else{
+        else
+        {
             clock.restart();
         }
 
         window.clear();
 
-        for (int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++)
+        {
             window.draw(circs[i]);
         }
 
         gui.draw(); 
         window.display();
-        /*
-        for(int i = 0; i < n; i++){
-            circs[i].setPosition(Atoms.coords_all[i]);
-            window.draw(circs[i]);
-
-            std::cout << Atoms.coords_all[i].x << "|";
-        }
-        std::cout << std::endl;
-        */
     }
 }
