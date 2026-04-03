@@ -5,9 +5,14 @@
 #include <random>
 #include <unordered_map>
 
-struct CellKey;
+struct CellKey {
+    int x, y;
+    bool operator==(const CellKey& o) const { return x == o.x && y == o.y; }
+};
 
-struct CellKeyHash;
+struct CellKeyHash {
+    size_t operator()(const CellKey& c) const;
+};
 
 /**
  * @brief Main class to work with atoms
