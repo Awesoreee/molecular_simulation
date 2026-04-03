@@ -40,7 +40,8 @@ void atoms::randomize(int max_velocity){
     std::uniform_real_distribution<float> distv(0.0f,float(2*max_velocity));
     for (i = 0; i < amount; i++){
         coords_all[i] = {distx(gen), disty(gen)};
-        veloc_all[i] = {distv(gen) - max_velocity, distv(gen) - max_velocity};
+        //veloc_all[i] = {distv(gen) - max_velocity, distv(gen) - max_velocity};
+        veloc_all[i] = {0,0};
     }
 }
 
