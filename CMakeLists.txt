@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(molecular_simulation)
 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data" 
+     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/SFML" "${CMAKE_CURRENT_BINARY_DIR}/sfml_build")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/TGUI" "${CMAKE_CURRENT_BINARY_DIR}/tgui_build")
 set(TGUI_BACKEND SFML_GRAPHICS)
