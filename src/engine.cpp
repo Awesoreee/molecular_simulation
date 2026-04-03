@@ -6,17 +6,6 @@
 #include <unordered_map>
 #include "../include/engine.hpp"
 
-struct CellKey {
-    int x, y;
-    bool operator==(const CellKey& o) const { return x == o.x && y == o.y; }
-};
-
-struct CellKeyHash {
-    size_t operator()(const CellKey& c) const {
-        return std::hash<int>()(c.x) ^ (std::hash<int>()(c.y) * 2654435761u);
-    }
-};
-
 class atoms {
     std::random_device rd;
     std::mt19937 gen{rd()};
