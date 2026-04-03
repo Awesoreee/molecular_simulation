@@ -82,7 +82,7 @@ sf::Vector2f atoms::count_force(sf::Vector2f coords1, sf::Vector2f coords2){
 
 int atoms::count_forces() {
     for (int i = 0; i < amount; i++) {
-        forces_all[i] = {0.f, 0.f};
+        forces_all[i] = {0.f, gravity_force};
         for (int j : query_neighbors(coords_all[i])) {
             if (i != j)
                 forces_all[i] += count_force(coords_all[i], coords_all[j]);
