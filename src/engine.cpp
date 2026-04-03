@@ -4,6 +4,7 @@
 #include <cmath>
 #include <random>
 #include <unordered_map>
+#include "../include/engine.hpp"
 
 struct CellKey {
     int x, y;
@@ -81,14 +82,12 @@ private:
         };
     }
 
-    // Пересобрать таблицу с нуля (вызывается каждый тик)
     void build_spatial_hash() {
         spatial_table.clear();
         for (int i = 0; i < amount; i++)
             spatial_table[get_cell(coords_all[i])].push_back(i);
     }
 
-    // Вернуть индексы всех атомов в 9 ячейках вокруг pos
     std::vector<int> query_neighbors(sf::Vector2f pos) const {
         std::vector<int> result;
         CellKey center = get_cell(pos);
@@ -142,6 +141,4 @@ private:
         }
         return 0;
     }
-
-    
 };

@@ -1,0 +1,134 @@
+\doxysection{atoms Class Reference}
+\hypertarget{classatoms}{}\label{classatoms}\index{atoms@{atoms}}
+
+
+Main class to work with atoms.  
+
+
+
+
+{\ttfamily \+\#include $<$engine.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classatoms_a379ca412274a0dc58ec9007bba899b59}\label{classatoms_a379ca412274a0dc58ec9007bba899b59} 
+{\bfseries atoms} (int n, sf::\+\+Vector2u zero, sf::\+\+Vector2u bord)
+\item 
+\Hypertarget{classatoms_a8b54f491e1ed8d059104a6992b653f52}\label{classatoms_a8b54f491e1ed8d059104a6992b653f52} 
+int {\bfseries add\+\_\+atom} (sf::\+\+Vector2f coords=sf::\+\+Vector2f(0.f, 0.f), sf::\+\+Vector2f veloc=sf::\+\+Vector2f(0.f, 0.f))
+\item 
+\Hypertarget{classatoms_aac7bcfb2dbc97fb70ad7679cb4305bd4}\label{classatoms_aac7bcfb2dbc97fb70ad7679cb4305bd4} 
+int {\bfseries tick\+\_\+forward} (float dt)
+\item 
+\Hypertarget{classatoms_a85cab5321c96812a887fcf15eb8b817f}\label{classatoms_a85cab5321c96812a887fcf15eb8b817f} 
+void {\bfseries randomize} (int max\+\_\+velocity)
+\item 
+\doxymbox{\hyperlink{classatoms_a379ca412274a0dc58ec9007bba899b59}{atoms}} (int n, sf::\+\+Vector2u zero, sf::\+\+Vector2u bord)
+\begin{DoxyCompactList}\small\item\em Construct a new atoms object. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{classatoms_a8b54f491e1ed8d059104a6992b653f52}{add\+\_\+atom}} (sf::\+\+Vector2f coords=sf::\+\+Vector2f(0.f, 0.f), sf::\+\+Vector2f veloc=sf::\+\+Vector2f(0.f, 0.f))
+\begin{DoxyCompactList}\small\item\em add new atom \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{classatoms_aac7bcfb2dbc97fb70ad7679cb4305bd4}{tick\+\_\+forward}} (float dt)
+\begin{DoxyCompactList}\small\item\em run one tick forward \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classatoms_a85cab5321c96812a887fcf15eb8b817f}{randomize}} (int max\+\_\+velocity)
+\begin{DoxyCompactList}\small\item\em randomize all existing atoms within the borders \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classatoms_a5a242938c32529083b1705a885877b69}\label{classatoms_a5a242938c32529083b1705a885877b69} 
+std::\+vector$<$ sf::\+\+Vector2f $>$ {\bfseries coords\+\_\+all}
+\begin{DoxyCompactList}\small\item\em list with all atoms coordinates \end{DoxyCompactList}\item 
+\Hypertarget{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}\label{classatoms_a947ac1c7ac3322a9b595e3439d451ecb} 
+int {\bfseries amount} = 0
+\begin{DoxyCompactList}\small\item\em amount of existing atoms \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main class to work with atoms. 
+
+\label{doc-constructors}
+\Hypertarget{classatoms_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classatoms_a379ca412274a0dc58ec9007bba899b59}\index{atoms@{atoms}!atoms@{atoms}}
+\index{atoms@{atoms}!atoms@{atoms}}
+\doxysubsubsection{\texorpdfstring{atoms()}{atoms()}}
+{\footnotesize\ttfamily \label{classatoms_a379ca412274a0dc58ec9007bba899b59} 
+atoms::\+atoms (\begin{DoxyParamCaption}\item[{int}]{n}{, }\item[{sf::\+\+Vector2u}]{zero}{, }\item[{sf::\+\+Vector2u}]{bord}{}\end{DoxyParamCaption})}
+
+
+
+Construct a new atoms object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & amount of start atoms \\
+\hline
+{\em zero} & coordinats of upper left corner of working space \\
+\hline
+{\em bord} & size of borders \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classatoms_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classatoms_a8b54f491e1ed8d059104a6992b653f52}\index{atoms@{atoms}!add\_atom@{add\_atom}}
+\index{add\_atom@{add\_atom}!atoms@{atoms}}
+\doxysubsubsection{\texorpdfstring{add\_atom()}{add\_atom()}}
+{\footnotesize\ttfamily \label{classatoms_a8b54f491e1ed8d059104a6992b653f52} 
+int atoms::\+add\+\_\+atom (\begin{DoxyParamCaption}\item[{sf::\+\+Vector2f}]{coords}{ = {\ttfamily sf:\+:\+Vector2f(0.f,~0.f)}, }\item[{sf::\+\+Vector2f}]{veloc}{ = {\ttfamily sf:\+:\+Vector2f(0.f,~0.f)}}\end{DoxyParamCaption})}
+
+
+
+add new atom 
+
+
+\begin{DoxyParams}{Parameters}
+{\em coords} & coordinats of new atom (by default (0,0)) \\
+\hline
+{\em veloc} & velocity of new atom (by default (0,0)) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int (0) 
+\end{DoxyReturn}
+\Hypertarget{classatoms_a85cab5321c96812a887fcf15eb8b817f}\index{atoms@{atoms}!randomize@{randomize}}
+\index{randomize@{randomize}!atoms@{atoms}}
+\doxysubsubsection{\texorpdfstring{randomize()}{randomize()}}
+{\footnotesize\ttfamily \label{classatoms_a85cab5321c96812a887fcf15eb8b817f} 
+void atoms::\+randomize (\begin{DoxyParamCaption}\item[{int}]{max\+\_\+velocity}{}\end{DoxyParamCaption})}
+
+
+
+randomize all existing atoms within the borders 
+
+
+\begin{DoxyParams}{Parameters}
+{\em max\+\_\+velocity} & maximum random velocity of randomized atoms \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classatoms_aac7bcfb2dbc97fb70ad7679cb4305bd4}\index{atoms@{atoms}!tick\_forward@{tick\_forward}}
+\index{tick\_forward@{tick\_forward}!atoms@{atoms}}
+\doxysubsubsection{\texorpdfstring{tick\_forward()}{tick\_forward()}}
+{\footnotesize\ttfamily \label{classatoms_aac7bcfb2dbc97fb70ad7679cb4305bd4} 
+int atoms::\+tick\+\_\+forward (\begin{DoxyParamCaption}\item[{float}]{dt}{}\end{DoxyParamCaption})}
+
+
+
+run one tick forward 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dt} & time of tick \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int (0) 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+engine.\+cpp\item 
+include/\+engine.\+hpp\end{DoxyCompactItemize}

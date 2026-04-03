@@ -1,0 +1,150 @@
+\doxysection{engine.\+cpp}
+\hypertarget{engine_8cpp_source}{}\label{engine_8cpp_source}\index{src/engine.cpp@{src/engine.cpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}../SFML/include/SFML/Graphics.hpp"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <random>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}../include/engine.hpp"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_cell_key}{CellKey}}\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keywordtype}{int}\ x,\ y;}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_cell_key}{CellKey}}\&\ o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x\ ==\ o.x\ \&\&\ y\ ==\ o.y;\ \}}
+\DoxyCodeLine{00012\ \};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_cell_key_hash}{CellKeyHash}}\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ operator()(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_cell_key}{CellKey}}\&\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::hash<int>()(c.x)\ \string^\ (std::hash<int>()(c.y)\ *\ 2654435761u);}
+\DoxyCodeLine{00017\ \ \ \ \ \}}
+\DoxyCodeLine{00018\ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{class\ }atoms\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ std::random\_device\ rd;}
+\DoxyCodeLine{00022\ \ \ \ \ std::mt19937\ gen\{rd()\};}
+\DoxyCodeLine{00023\ \ \ \ \ sf::Vector2u\ zeroPos;}
+\DoxyCodeLine{00024\ \ \ \ \ sf::Vector2u\ borders;}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{float}\ sigmaNe\ =\ 2.74;}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{float}\ epsNe\ =\ 0.0031\ *\ 1.602\ *\ pow(10,\ -\/19);}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{float}\ massNe\ =\ 1.66;}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{float}\ cell\_size\ =\ 2.5\ *\ sigmaNe;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ std::vector<sf::Vector2f>\ veloc\_all;}
+\DoxyCodeLine{00031\ \ \ \ \ std::vector<sf::Vector2f>\ forces\_all;}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ std::unordered\_map<CellKey,\ std::vector<int>,\ \doxymbox{\hyperlink{struct_cell_key_hash}{CellKeyHash}}>\ spatial\_table;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ std::vector<sf::Vector2f>\ \doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}};}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}}\ =\ 0;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ atoms(\textcolor{keywordtype}{int}\ n,\ sf::Vector2u\ zero,\ sf::Vector2u\ bord)\{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ zeroPos\ =\ zero;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ borders\ =\ bord;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}.resize(n);}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ veloc\_all.resize(n);}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ forces\_all.resize(n);}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}}\ =\ n;}
+\DoxyCodeLine{00046\ \ \ \ \ \}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{int}\ add\_atom(sf::Vector2f\ coords\ =\ sf::Vector2f(0.f,\ 0.f),\ sf::Vector2f\ veloc\ =\ sf::Vector2f(0.f,\ 0.f))\{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}.push\_back(coords);}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ veloc\_all.push\_back(veloc);}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ forces\_all.push\_back(\{1,1\});}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}}++;}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00054\ \ \ \ \ \}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{int}\ tick\_forward(\textcolor{keywordtype}{float}\ dt)\{}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ build\_spatial\_hash();}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ count\_forces();}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (i=0;i<\doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}};i++)\{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ check\_wall\_collision(\&(\doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}[i]),\ \&(veloc\_all[i]),\ forces\_all[i],\ massNe,\ dt);}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{void}\ randomize(\textcolor{keywordtype}{int}\ max\_velocity)\{}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i;}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ std::uniform\_real\_distribution<float>\ distx(\textcolor{keywordtype}{float}(zeroPos.x),\textcolor{keywordtype}{float}(zeroPos.x\ +\ borders.x));}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ std::uniform\_real\_distribution<float>\ disty(\textcolor{keywordtype}{float}(zeroPos.y),\textcolor{keywordtype}{float}(zeroPos.y\ +\ borders.y));}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ std::uniform\_real\_distribution<float>\ distv(0.0f,\textcolor{keywordtype}{float}(2*max\_velocity));}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (i\ =\ 0;\ i\ <\ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}};\ i++)\{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}[i]\ =\ \{distx(gen),\ disty(gen)\};}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ veloc\_all[i]\ =\ \{distv(gen)\ -\/\ max\_velocity,\ distv(gen)\ -\/\ max\_velocity\};}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00075\ \ \ \ \ \}}
+\DoxyCodeLine{00076\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ CellKey\ get\_cell(sf::Vector2f\ pos)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(std::floor(pos.x\ /\ cell\_size)),}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(std::floor(pos.y\ /\ cell\_size))}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00083\ \ \ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{void}\ build\_spatial\_hash()\ \{}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ spatial\_table.clear();}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}};\ i++)}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ spatial\_table[get\_cell(\doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}[i])].push\_back(i);}
+\DoxyCodeLine{00089\ \ \ \ \ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ std::vector<int>\ query\_neighbors(sf::Vector2f\ pos)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ std::vector<int>\ result;}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ CellKey\ center\ =\ get\_cell(pos);}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ dx\ =\ -\/1;\ dx\ <=\ 1;\ dx++)\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ dy\ =\ -\/1;\ dy\ <=\ 1;\ dy++)\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ it\ =\ spatial\_table.find(\{center.x\ +\ dx,\ center.y\ +\ dy\});}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (it\ !=\ spatial\_table.end())}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id}\ :\ it-\/>second)}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ result.push\_back(\textcolor{keywordtype}{id});}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00103\ \ \ \ \ \}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ sf::Vector2f\ count\_force(sf::Vector2f\ coords1,\ sf::Vector2f\ coords2)\{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ sf::Vector2f\ diff\ =\ coords1\ -\/\ coords2;}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ distance\ =\ std::sqrt(diff.x\ *\ diff.x\ +\ diff.y\ *\ diff.y);}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (distance\ <\ 1e-\/6)\ \textcolor{keywordflow}{return}\ \{0,\ 0\};}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ sr\ =\ sigmaNe\ /\ distance;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ force\ =\ (48\ *\ epsNe\ /\ sigmaNe)\ *\ (pow(sr,\ 13)\ -\/\ 0.5\ *\ pow(sr,\ 7));}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ diff.normalized()\ *\ force;}
+\DoxyCodeLine{00112\ \ \ \ \ \}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{int}\ count\_forces()\ \{}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}};\ i++)\ \{}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ forces\_all[i]\ =\ \{0.f,\ 0.f\};}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ :\ query\_neighbors(\doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}[i]))\ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ !=\ j)}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ forces\_all[i]\ +=\ count\_force(\doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}[i],\ \doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}}[j]);}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00123\ \ \ \ \ \}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordtype}{int}\ check\_wall\_collision(sf::Vector2f*\ coords,\ sf::Vector2f*\ veloc,\ sf::Vector2f\ force,\ \textcolor{keywordtype}{float}\ mass,\ \textcolor{keywordtype}{float}\ dt)\ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ *coords\ +=\ *veloc\ *\ dt\ +\ 0.5f\ *\ force\ *\ dt\ *\ dt\ /\ mass;}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ *veloc\ +=\ force\ *\ dt\ /\ mass;}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (coords-\/>x\ <\ zeroPos.x)\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ coords-\/>x\ =\ 2.0f\ *\ zeroPos.x\ -\/\ coords-\/>x;}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (veloc-\/>x\ <\ 0)\ veloc-\/>x\ *=\ -\/1;}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (coords-\/>x\ >\ zeroPos.x\ +\ borders.x)\ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ coords-\/>x\ =\ 2.0f\ *\ (zeroPos.x\ +\ borders.x)\ -\/\ coords-\/>x;\ }
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (veloc-\/>x\ >\ 0)\ veloc-\/>x\ *=\ -\/1;}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (coords-\/>y\ <\ zeroPos.y)\ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ coords-\/>y\ =\ 2.0f\ *\ zeroPos.y\ -\/\ coords-\/>y;\ }
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (veloc-\/>y\ <\ 0)\ veloc-\/>y\ *=\ -\/1;}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (coords-\/>y\ >\ zeroPos.y\ +\ borders.y)\ \{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ coords-\/>y\ =\ 2.0f\ *\ (zeroPos.y\ +\ borders.y)\ -\/\ coords-\/>y;}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (veloc-\/>y\ >\ 0)\ veloc-\/>y\ *=\ -\/1;}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00143\ \ \ \ \ \}}
+\DoxyCodeLine{00144\ \};}
+
+\end{DoxyCode}

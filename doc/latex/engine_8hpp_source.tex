@@ -1,0 +1,58 @@
+\doxysection{engine.\+hpp}
+\hypertarget{engine_8hpp_source}{}\label{engine_8hpp_source}\index{include/engine.hpp@{include/engine.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}../SFML/include/SFML/System/Vector2.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <random>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_cell_key}{CellKey}};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_cell_key_hash}{CellKeyHash}};}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classatoms}{atoms}}\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ std::random\_device\ rd;}
+\DoxyCodeLine{00018\ \ \ \ \ std::mt19937\ gen\{rd()\};}
+\DoxyCodeLine{00019\ \ \ \ \ sf::Vector2u\ zeroPos;}
+\DoxyCodeLine{00020\ \ \ \ \ sf::Vector2u\ borders;}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{float}\ sigmaNe;}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{float}\ epsNe;}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{float}\ massNe;}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{float}\ cell\_size;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ std::vector<sf::Vector2f>\ veloc\_all;}
+\DoxyCodeLine{00027\ \ \ \ \ std::vector<sf::Vector2f>\ forces\_all;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ std::unordered\_map<CellKey,\ std::vector<int>,\ CellKeyHash>\ spatial\_table;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ std::vector<sf::Vector2f>\ \doxymbox{\hyperlink{classatoms_a5a242938c32529083b1705a885877b69}{coords\_all}};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{classatoms_a947ac1c7ac3322a9b595e3439d451ecb}{amount}};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00051\ \ \ \ \ \doxymbox{\hyperlink{classatoms_a379ca412274a0dc58ec9007bba899b59}{atoms}}(\textcolor{keywordtype}{int}\ n,\ sf::Vector2u\ zero,\ sf::Vector2u\ bord);}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{classatoms_a8b54f491e1ed8d059104a6992b653f52}{add\_atom}}(sf::Vector2f\ coords\ =\ sf::Vector2f(0.f,\ 0.f),\ sf::Vector2f\ veloc\ =\ sf::Vector2f(0.f,\ 0.f));}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{classatoms_aac7bcfb2dbc97fb70ad7679cb4305bd4}{tick\_forward}}(\textcolor{keywordtype}{float}\ dt);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classatoms_a85cab5321c96812a887fcf15eb8b817f}{randomize}}(\textcolor{keywordtype}{int}\ max\_velocity);}
+\DoxyCodeLine{00076\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \doxymbox{\hyperlink{struct_cell_key}{CellKey}}\ get\_cell(sf::Vector2f\ pos);}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{void}\ build\_spatial\_hash();}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ std::vector<int>\ query\_neighbors(sf::Vector2f\ pos);}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ sf::Vector2f\ count\_force(sf::Vector2f\ coords1,\ sf::Vector2f\ coords2);}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{int}\ count\_forces();}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordtype}{int}\ check\_wall\_collision(sf::Vector2f*\ coords,\ sf::Vector2f*\ veloc,\ sf::Vector2f\ force,\ \textcolor{keywordtype}{float}\ mass,\ \textcolor{keywordtype}{float}\ dt);}
+\DoxyCodeLine{00089\ \};}
+
+\end{DoxyCode}
