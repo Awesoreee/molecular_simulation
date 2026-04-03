@@ -29,7 +29,6 @@ class atoms {
     float epsNe = 0.0031 * 1.602 * pow(10, -19);
     float massNe = 1.66;
     float cell_size = 2.5 * sigmaNe;
-    float gravity_force = 9.8 * pow(10, -1);
 
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;
@@ -42,6 +41,12 @@ class atoms {
      * 
      */
     std::vector<sf::Vector2f> coords_all;
+
+    /**
+     * @brief strength of gravity force
+     * 
+     */
+    float gravity_force = 9.8 * pow(10, -13);
 
     /**
      * @brief amount of existing atoms
