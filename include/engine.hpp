@@ -27,8 +27,13 @@ class atoms {
     sf::Vector2u borders;
     float sigmaNe = 2.74;
     float epsNe = 0.0031 * 1.602 * pow(10, 1);
-    float massNe = 20 * 1.66 * pow(10,-9);
+    float massNe = 20 * 1.66 * pow(10,-4);
     float cell_size = 2.5 * sigmaNe;
+    /**
+     * @brief force to compencate potential jump
+     * 
+     */
+    float comp_force = (48 * epsNe / sigmaNe) * (pow((sigmaNe / cell_size), 13) - 0.5 * pow((sigmaNe / cell_size), 7));
 
     std::vector<sf::Vector2f> veloc_all;
     std::vector<sf::Vector2f> forces_all;

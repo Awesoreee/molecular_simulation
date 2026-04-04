@@ -18,20 +18,47 @@ atoms::atoms(int n, sf::Vector2u zero, sf::Vector2u bord){
 int atoms::add_atom(sf::Vector2f coords, sf::Vector2f veloc){
     coords_all.push_back(coords);
     veloc_all.push_back(veloc);
-    forces_all.push_back({1,1});
+    forces_all.push_back({0,0});
     amount++;
     return 0;
 }
 
-int atoms::tick_forward(float dt){
+
+int atoms::tick_forward(float dt) {
     build_spatial_hash();
+    
+    for (int i = 0; i < amount; i++) {
+        veloc_all[i] += 0.5f * forces_all[i] / massNe * dt;
+        coords_all[i] += veloc_all[i] * dt;
+    }
+
     count_forces();
-    int i;
-    for (i=0;i<amount;i++){
-        check_wall_collision(&(coords_all[i]), &(veloc_all[i]), forces_all[i], massNe, dt);
+
+    for (int i = 0; i < amount; i++) {
+        veloc_all[i] += 0.5f * forces_all[i] / massNe * dt;
+        if (coords_all[i].x < zeroPos.x) {
+            coords_all[i].x = 2.0f * zeroPos.x - coords_all[i].x;
+            veloc_all[i] *= 0.999f;
+            if (veloc_all[i].x < 0) veloc_all[i].x *= -1;
+        } else if (coords_all[i].x > zeroPos.x + borders.x) {
+            coords_all[i].x = 2.0f * (zeroPos.x + borders.x) - coords_all[i].x; 
+            veloc_all[i] *= 0.999f;
+            if (veloc_all[i].x > 0) veloc_all[i].x *= -1;
+        }
+        if (coords_all[i].y < zeroPos.y) {
+            coords_all[i].y = 2.0f * zeroPos.y - coords_all[i].y; 
+            veloc_all[i] *= 0.999f;
+            if (veloc_all[i].y < 0) veloc_all[i].y *= -1;
+        } else if (coords_all[i].y > zeroPos.y + borders.y) {
+            coords_all[i].y = 2.0f * (zeroPos.y + borders.y) - coords_all[i].y;
+            veloc_all[i] *= 0.999f;
+            if (veloc_all[i].y > 0) veloc_all[i].y *= -1;
+        }
     }
     return 0;
 }
+
+
 
 void atoms::randomize(int max_velocity){
     int i;
@@ -40,7 +67,7 @@ void atoms::randomize(int max_velocity){
     std::uniform_real_distribution<float> distv(0.0f,float(2*max_velocity));
     for (i = 0; i < amount; i++){
         coords_all[i] = {distx(gen), disty(gen)};
-        //veloc_all[i] = {distv(gen) - max_velocity, distv(gen) - max_velocity};
+        veloc_all[i] = {distv(gen) - max_velocity, distv(gen) - max_velocity};
         veloc_all[i] = {0,0};
     }
 }
@@ -74,10 +101,14 @@ std::vector<int> atoms::query_neighbors(sf::Vector2f pos) const {
 
 sf::Vector2f atoms::count_force(sf::Vector2f coords1, sf::Vector2f coords2){
     sf::Vector2f diff = coords1 - coords2;
-    float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+    float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y + 0.1f);
     if (distance < 1e-6) return {0, 0};
     float sr = sigmaNe / distance;
-    float force = (48 * epsNe / sigmaNe) * (pow(sr, 13) - 0.5 * pow(sr, 7));
+    float force = (48 * epsNe / sigmaNe) * (pow(sr, 13) - 0.5 * pow(sr, 7)) - comp_force;
+    const float MAX_FORCE = 1000.0f; 
+    if (force > MAX_FORCE) force = MAX_FORCE;
+    if (force < -MAX_FORCE) force = -MAX_FORCE;
+
     return diff.normalized() * force;
 }
 
@@ -97,16 +128,20 @@ int atoms::check_wall_collision(sf::Vector2f* coords, sf::Vector2f* veloc, sf::V
     *veloc += force * dt / mass;
     if (coords->x < zeroPos.x) {
         coords->x = 2.0f * zeroPos.x - coords->x;
+        *veloc *= 0.999f;
         if (veloc->x < 0) veloc->x *= -1;
     } else if (coords->x > zeroPos.x + borders.x) {
         coords->x = 2.0f * (zeroPos.x + borders.x) - coords->x; 
+        *veloc *= 0.999f;
         if (veloc->x > 0) veloc->x *= -1;
     }
     if (coords->y < zeroPos.y) {
         coords->y = 2.0f * zeroPos.y - coords->y; 
+        *veloc *= 0.999f;
         if (veloc->y < 0) veloc->y *= -1;
     } else if (coords->y > zeroPos.y + borders.y) {
         coords->y = 2.0f * (zeroPos.y + borders.y) - coords->y;
+        *veloc *= 0.999f;
         if (veloc->y > 0) veloc->y *= -1;
     }
     return 0;
